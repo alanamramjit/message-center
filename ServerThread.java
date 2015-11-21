@@ -28,7 +28,7 @@ public class ServerThread implements Runnable {
                                         System.err.println(temp);
                                         pw.println(temp);
                                         clSock.close();
-
+				}
 
                                 else{
                                         clSock.close();
@@ -41,7 +41,8 @@ public class ServerThread implements Runnable {
 
                         }
 
-                }
+                
+		}
                 catch(IOException ioe){
                         ioe.printStackTrace();
                 }

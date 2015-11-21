@@ -21,8 +21,7 @@ public class MSCP{
                         while (read.hasNextLine()){
                                 String name = read.next();
                                 String pw = read.next();
-                                System.err.println(name + " " + pw);
-                                creds.put(name, new User(name, pw));
+                               creds.put(name, new User(name, pw));
                         }
 
                 }
@@ -94,7 +93,7 @@ public class MSCP{
                 User sendTo = creds.get(peer);
                 User friend = creds.get(toPeer);
                 if(sendTo.isBlockedBy(friend)){
-                        send(sendTo.getIP(), sendTo.getPort(), "You have been blocked by this user.");
+                        send(sendTo.getIP(), sendTo.getPort(), "You have been blocked by this user.\n>");
                         return;
                 }
 
@@ -119,7 +118,7 @@ public class MSCP{
 
 
         private void online(User u){
-                String response = "Currently online: " + online.keySet();
+                String response = "Currently online: " + online.keySet() + "\n>";
                 send(u.getIP(), u.getPort(), response);
         }
 
@@ -136,11 +135,11 @@ public class MSCP{
                 String send = "";
 
                 if(user == null)
-                        send = "Not a registered user.";
+                        send = "Not a registered user. ";
 
                 else if (user.getStatus().equals("timeout") && 
                                 System.currentTimeMillis() < TIMEOUT + user.getTimeout() )
-                        send = "Your account has been temporarily blocked. Please try again after some time has passed.";
+                        send = "Your account has been temporarily blocked. Please try again after some time has passed. ";
                 else if (user.isPassword(pw)){
                         String currentStatus = user.getStatus();
                         if (currentStatus.equals("login"))
@@ -148,11 +147,11 @@ public class MSCP{
                         user.setStatus(1);
                         Collection<User> all = online.values(); 
                         for (User u : all )
-                                send(u.getIP(), u.getPort(), user.getName() + " has logged in." );
+                                send(u.getIP(), u.getPort(), user.getName() + " has logged in.\n>" );
 
 
                         online.put(username, user);
-                        send = "Welcome, " + user.getName() + ".";
+                        send = "Welcome,\n " + user.getName() + ".\n>";
                                        }
                 else if (user.getAttempts() < 3){
                         user.incAttempts();
@@ -177,11 +176,12 @@ public class MSCP{
                 u.setIP(request[2]);
                 u.setPort(Integer.parseInt(request[3]));
                 online.put(u.getName(), u);
-                send(u.getIP(), u.getPort(), "Login successful!");
+                send(u.getIP(), u.getPort(), "Login successful!\n");
                 //send any queued messages while we're at it
                 while(!u.isEmptyQueue()){
                         send(u.getIP(), u.getPort(), u.popQueue());
                 }
+		send(u.getIP(), u.getPort(),"\n>");
 
         }
 
@@ -218,12 +218,12 @@ public class MSCP{
                 else if(sender.isBlockedBy(sendTo))   //check if user is blocked
                         send(sender.getIP(), sender.getPort(), "Your message could not be delivered to a recipient because they have blocked you.");
                 else if(!online.containsKey(to)){    //queue a message if the user isn't online but is a valid user
-                        sendTo.queue("From: " + from + "\nMessage: " + msg.substring(msg.indexOf(first), msg.lastIndexOf(from)));
+                        sendTo.queue("From: " + from + "\nMessage: " + msg.substring(msg.indexOf(first), msg.lastIndexOf(from))+"\n>");
                 }               
 
                 else{   //send directly if valid, unblocked, online user
                         String sendString = "From: " + from + "\nMessage: " + msg.substring(msg.indexOf(first), msg.lastIndexOf(from));
-                       send(sendTo.getIP(), sendTo.getPort(), sendString);
+                       send(sendTo.getIP(), sendTo.getPort(), sendString+"\n>");
                 }
                 return "Message sent.";
         }

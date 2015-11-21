@@ -1,6 +1,6 @@
 /**
  * Heartbeat thread keeps track of the last time it sent a beat and sends one once
- * every BEAT_MS miliseconds. Straightforwad implentation.
+ * every BEAT_MS miliseconds. Straightforward implentation.
  */
 
 import java.net.*;

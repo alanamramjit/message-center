@@ -25,18 +25,17 @@ public class Client{
                         int port = 0;                                                           //client port
 
                         /*
-                         * User authentication; call authenticate() in a loop until a valid userID is established.
+                         * User authentication; call authenticate() for a valid userID is established.
                          * The user can't send any commands until she logs in, so do this before command prompt.
                          */
 
                        
-                        String user = null;
-                        while(!login){
-                                user = authenticate(servHost, servPort, host);
-                                if( user != null){
-                                        login = true;
+                        String user = authenticate(servHost, servPort, host);
+                                if( user == null){
+                                        p("Attempt to connect failed.\n");
+					System.exit(0);
                                 }                  
-                        }
+                        boolean login = true;
 
                         //at this point, user logged in so begin listening for messages on a port
                         st = new SocketThread();
@@ -48,23 +47,17 @@ public class Client{
                         String command = "register " + user + " " + host + " " + port;
                         send(servHost, servPort, command);         
                         //start sending heartbeats
-                        hb = new Heartbeat(user, servHost, servPort);
-                        hb.start();
+                        //hb = new Heartbeat(user, servHost, servPort);
+                        //hb.start();
 
                         //let validation messages print before starting command prompt
-                        try{
-                                Thread.sleep(10); 
-                        }
-                        catch(InterruptedException ie){};
-
-           
-                       
+                                               
                         while(login){
 
-                                System.out.print(">");                         
+                                                         
                                 command = in.nextLine();
                                 command += " " + user;
-                                command.toLowerCase();
+                                //command.toLowerCase();
 
                                 //private message commands don't go to the server so we need to intercept these
                                 if(command.startsWith("private")){
@@ -132,12 +125,16 @@ public class Client{
                 String request = "login " + clientHost + " ", response;          
                 String user = null;
                 try{
+			Socket s = new Socket(servHost, serverPort);
+                       	if (!s.isConnected()){
+				p("Could not connect to " + servHost);
+				return user;
+			}
                         p("Enter Username: ");
                         user = in.nextLine();
                         request += " " + user + " ";
                         p("Enter Password: ");
                         request +=  in.nextLine();
-                        Socket s = new Socket(servHost, serverPort);
                         PrintWriter pw = new PrintWriter(s.getOutputStream(), true);
                         BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
                         System.err.println("Sending request: " + request);
@@ -152,7 +149,7 @@ public class Client{
                         s.close();
 
                 }
-                catch(IOException ioe){ioe.printStackTrace();}
+                catch(IOException ioe){}
 
                 return user;
         }
