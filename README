@@ -1,15 +1,20 @@
 
 What works:
 -Most basic functionality works. Here are the commands that are implemented:
---message <user>
---broadcast
---login, including time out and presence notification
---logout, including presence notification
---block
---unblock
---private message
---online
+--message <user> <text>
+--broadcast <message> //sends to all users
+--login, including time out and presence notification sent to all online users
+--logout, including a notification that user logged out to all users
+--block <user>
+--unblock <user>
+--private message <user>
+--online (see whose online)
 --message forwarding
 
 Example use:
+-Run "make" in directory
+-start an instance of server with $java Server <portnumber>
+-start as many instances of clients with $java Client <ServerIP> <ServerPort>
+-clients can log in with any user in credentials.txt; 4th failed attempt at logging in will result in timeout
+-any messages sent while not logged in will be printed upon log in
   
