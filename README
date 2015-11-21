@@ -1,14 +1,3 @@
-Name: Alana Ramjit
-UNI: amr2235
-CSEE 4119
-Programming Assignment 1
-
-
-Compilation:
-type "make" in the directory; all source code should compile.
-Start the server with "java Server <portNumber>". Start a client session
-with "java Client <serverIP> <serverPort>".
-
 
 What works:
 -Most basic functionality works. Here are the commands that are implemented:
@@ -22,46 +11,5 @@ What works:
 --online
 --message forwarding
 
-Here's what doesn't work:
---heartbeat; the basics of this were almost implemented, but updating a
-synchornized data structure to track who's logged off did not work out. There
-is Heartbeat class that will start a thread that every 30 seconds sends out
-a pulse to the server. The server can intercept these calls and update the
-user state, but there's no mechanism to actually logout users that haven't
-sent a heartbeat.
---offline P2P messaging forwarding, no attempt made
---graceful exit on ^C. I tried to implement a shutdown hook but everything
-broke. There's a ghost thread out there on the clic-lab sending heartbeat
-pulses because I couldn't shut it off. The idea was to get the threadgroup,
-send out an interrupt signal to end anything blocking to the whole thing, and
-then....leave? It didn't work.
-
-
-
-Organization:
-The Heartbeat, Client, and SocketThread classes belong to the userside. The
-SocketThread listens on some open port after the user log-ins and receives any
-messages from the central server. Heartbeat theoretically sends out an impulse
-(see "what doesn't work"). The Client side takes commands and sends them to
-the server or initiates a p2p connection.
-
-Server and MSCP belong to the server side; Server listens, takes requests,
-closes the socket, passes the request to an instance of MSCP which then
-determines the appropriate response and sends it along.
-
-
-Drawbacks:
-There's no unified protocol design so extending this design is difficult. It
-doesn't scale, it's not secure, and there's little error hadndling. There may
-be some minor synchronization issues in the P2P implementation but probably
-nothing that would cause system failure or wildly inaccurate
-behavior--occassionally someone may not be able to P2P message someone they
-should be able to for a second or two, but never permanently. In general, the
-string manipulation approach to understanding messages is a bit hacky.
-
-Pros:
-It works, for the most part. There are elements of protocol--all messages are
-tagged with the userID sending it. The control flow is generally tight enough
-that there isn't that much malicious behavior available.
-
-
+Example use:
+  
